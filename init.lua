@@ -663,31 +663,42 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        pyright = {
-          capabilities = {
-            textDocument = {
-              publishDiagnostics = {
-                tagSupport = {
-                  valueSet = { 2 },
-                },
-              },
-            },
-          },
-          settings = {
-            pyright = {
-              -- Using Ruff's import organizer
-              disableOrganizeImports = true,
-              disableTaggedHints = true,
-            },
-            python = {
-              analysis = {
-                -- Ignore all files for analysis to exclusively use Ruff for linting
-                ignore = { '*' },
-                typeCheckingMode = 'off', -- Using mypy
-              },
-            },
-          },
-        },
+        -- pyright = {
+        --   capabilities = {
+        --     textDocument = {
+        --       publishDiagnostics = {
+        --         tagSupport = {
+        --           valueSet = { 2 },
+        --         },
+        --       },
+        --     },
+        --   },
+        --   settings = {
+        --     pyright = {
+        --       -- Using Ruff's import organizer
+        --       disableOrganizeImports = true,
+        --       disableTaggedHints = true,
+        --       openFilesOnly = true,
+        --     },
+        --     python = {
+        --       analysis = {
+        --         autoSearchPaths = true,
+        --         diagnosticMode = 'openFilesOnly',
+        --         -- Ignore all files for analysis to exclusively use Ruff for linting
+        --         ignore = { 'src' },
+        --         exclude = { 'src' },
+        --         typeCheckingMode = 'off', -- Using mypy
+        --         diagnosticSeverityOverrides = {
+        --           reportGeneralTypeIssues = false,
+        --           reportImplicitOverride = false,
+        --           reportIncompatibleMethodOverride = false,
+        --           reportIncompatibleVariableOverride = false,
+        --         },
+        --       },
+        --       pythonPath = '.venv/bin/python',
+        --     },
+        --   },
+        -- },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
