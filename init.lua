@@ -1,25 +1,4 @@
 --[[
-
-=====================================================================
-==================== READ THIS BEFORE CONTINUING ====================
-=====================================================================
-========                                    .-----.          ========
-========         .----------------------.   | === |          ========
-========         |.-""""""""""""""""""-.|   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||   KICKSTART.NVIM   ||   |-----|          ========
-========         ||                    ||   | === |          ========
-========         ||                    ||   |-----|          ========
-========         ||:Tutor              ||   |:::::|          ========
-========         |'-..................-'|   |____o|          ========
-========         `"")----------------(""`   ___________      ========
-========        /::::::::::|  |::::::::::\  \ no mouse \     ========
-========       /:::========|  |==hjkl==:::\  \ required \    ========
-========      '""""""""""""'  '""""""""""""'  '""""""""""'   ========
-========                                                     ========
-=====================================================================
-=====================================================================
-
 What is Kickstart?
 
   Kickstart.nvim is *not* a distribution.
@@ -159,7 +138,6 @@ vim.opt.scrolloff = 10
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 vim.keymap.set('n', '<leader>w', '<cmd>:update<cr>', { desc = 'Update buffer' })
-vim.keymap.set('i', '<leader>w', '<cmd>:update<cr>', { desc = 'Update buffer' })
 
 vim.keymap.set('n', '<leader>p', '<cmd>:Ex<cr>', { desc = 'Explore files' })
 
@@ -193,6 +171,19 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+function _G.set_terminal_keymaps()
+  local opts = { buffer = 0 }
+  vim.keymap.set('t', '<esc>', [[<C-\><C-n>]], opts)
+  vim.keymap.set('t', 'jk', [[<C-\><C-n>]], opts)
+  vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
+  vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+  vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
+  vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
+  vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
+end
+
+-- if you only want these mappings for toggle term use term://*toggleterm#* instead
+vim.cmd 'autocmd! TermOpen term://* lua set_terminal_keymaps()'
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -329,7 +320,6 @@ require('lazy').setup({
       },
     },
   },
-
   {
     'ThePrimeagen/harpoon',
     branch = 'harpoon2',
@@ -360,15 +350,29 @@ require('lazy').setup({
       vim.keymap.set('n', '<C-4>', function()
         harpoon:list():select(4)
       end)
+      vim.keymap.set('n', '<C-5>', function()
+        harpoon:list():select(5)
+      end)
 
       -- Toggle previous & next buffers stored within Harpoon list
-      vim.keymap.set('n', '<C-S-P>', function()
+      vim.keymap.set('n', '<C-S-O>', function()
         harpoon:list():prev()
       end)
-      vim.keymap.set('n', '<C-S-N>', function()
+      vim.keymap.set('n', '<C-S-I>', function()
         harpoon:list():next()
       end)
     end,
+  },
+
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    config = function()
+      require('toggleterm').setup {
+        open_mapping = [[<c-\>]],
+      }
+    end,
+    opts = {},
   },
 
   -- NOTE: Plugins can specify dependencies.
@@ -663,42 +667,42 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {
-        --   capabilities = {
-        --     textDocument = {
-        --       publishDiagnostics = {
-        --         tagSupport = {
-        --           valueSet = { 2 },
-        --         },
-        --       },
-        --     },
-        --   },
-        --   settings = {
-        --     pyright = {
-        --       -- Using Ruff's import organizer
-        --       disableOrganizeImports = true,
-        --       disableTaggedHints = true,
-        --       openFilesOnly = true,
-        --     },
-        --     python = {
-        --       analysis = {
-        --         autoSearchPaths = true,
-        --         diagnosticMode = 'openFilesOnly',
-        --         -- Ignore all files for analysis to exclusively use Ruff for linting
-        --         ignore = { 'src' },
-        --         exclude = { 'src' },
-        --         typeCheckingMode = 'off', -- Using mypy
-        --         diagnosticSeverityOverrides = {
-        --           reportGeneralTypeIssues = false,
-        --           reportImplicitOverride = false,
-        --           reportIncompatibleMethodOverride = false,
-        --           reportIncompatibleVariableOverride = false,
-        --         },
-        --       },
-        --       pythonPath = '.venv/bin/python',
-        --     },
-        --   },
-        -- },
+        pyright = {
+          capabilities = {
+            textDocument = {
+              publishDiagnostics = {
+                tagSupport = {
+                  valueSet = { 2 },
+                },
+              },
+            },
+          },
+          settings = {
+            pyright = {
+              -- Using Ruff's import organizer
+              disableOrganizeImports = true,
+              disableTaggedHints = true,
+              openFilesOnly = true,
+            },
+            python = {
+              analysis = {
+                autoSearchPaths = true,
+                diagnosticMode = 'openFilesOnly',
+                -- Ignore all files for analysis to exclusively use Ruff for linting
+                ignore = { 'src' },
+                exclude = { 'src' },
+                typeCheckingMode = 'off', -- Using mypy
+                diagnosticSeverityOverrides = {
+                  reportGeneralTypeIssues = false,
+                  reportImplicitOverride = false,
+                  reportIncompatibleMethodOverride = false,
+                  reportIncompatibleVariableOverride = false,
+                },
+              },
+              pythonPath = '.venv/bin/python',
+            },
+          },
+        },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
