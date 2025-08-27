@@ -1,16 +1,6 @@
 --[[
 What is Kickstart?
 
-  Kickstart.nvim is *not* a distribution.
-
-  Kickstart.nvim is a starting point for your own configuration.
-    The goal is that you can read every line of code, top-to-bottom, understand
-    what your configuration is doing, and modify it to suit your needs.
-
-    Once you've done that, you can start exploring, configuring and tinkering to
-    make Neovim your own! That might mean leaving Kickstart just the way it is for a while
-    or immediately breaking it into modular pieces. It's up to you!
-
     If you don't know anything about Lua, I recommend taking some time to read through
     a guide. One possible example which will only take 10-15 minutes:
       - https://learnxinyminutes.com/docs/lua/
@@ -19,21 +9,6 @@ What is Kickstart?
     reference for how Neovim integrates Lua.
     - :help lua-guide
     - (or HTML version): https://neovim.io/doc/user/lua-guide.html
-
-Kickstart Guide:
-
-  TODO: The very first thing you should do is to run the command `:Tutor` in Neovim.
-
-    If you don't know what this means, type the following:
-      - <escape key>
-      - :
-      - Tutor
-      - <enter key>
-
-    (If you already know the Neovim basics, you can skip this step.)
-
-  Once you've completed that, you can continue working through **AND READING** the rest
-  of the kickstart init.lua.
 
   Next, run AND READ `:help`.
     This will open up a help window with some basic information
@@ -56,11 +31,6 @@ Kickstart Guide:
     for when you are first encountering a few different constructs in your Neovim config.
 
 If you experience any errors while trying to install kickstart, run `:checkhealth` for more info.
-
-I hope you enjoy your Neovim journey,
-- TJ
-
-P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
 -- Set <space> as the leader key
@@ -250,8 +220,8 @@ require('lazy').setup({
     },
   },
 
-  { 'smithbm2316/centerpad.nvim' },
   { { 'shortcuts/no-neck-pain.nvim', version = '*' } },
+
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
@@ -340,21 +310,12 @@ require('lazy').setup({
         harpoon.ui:toggle_quick_menu(harpoon:list())
       end)
 
-      vim.keymap.set('n', '<C-1>', function()
-        harpoon:list():select(1)
-      end)
-      vim.keymap.set('n', '<C-2>', function()
-        harpoon:list():select(2)
-      end)
-      vim.keymap.set('n', '<C-3>', function()
-        harpoon:list():select(3)
-      end)
-      vim.keymap.set('n', '<C-4>', function()
-        harpoon:list():select(4)
-      end)
-      vim.keymap.set('n', '<C-5>', function()
-        harpoon:list():select(5)
-      end)
+      for i = 1, 9 do
+        -- 'M' letter is for Alt key
+        vim.keymap.set('n', '<M-' .. i .. '>', function()
+          harpoon:list():select(i)
+        end)
+      end
 
       -- Toggle previous & next buffers stored within Harpoon list
       vim.keymap.set('n', '<C-S-O>', function()
@@ -375,6 +336,11 @@ require('lazy').setup({
       }
     end,
     opts = {},
+  },
+
+  {
+    'shortcuts/no-neck-pain.nvim',
+    version = '*',
   },
 
   -- NOTE: Plugins can specify dependencies.
@@ -667,44 +633,42 @@ require('lazy').setup({
       --  - settings (table): Override the default settings passed when initializing the server.
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
-        -- clangd = {},
-        -- gopls = {},
-        pyright = {
-          capabilities = {
-            textDocument = {
-              publishDiagnostics = {
-                tagSupport = {
-                  valueSet = { 2 },
-                },
-              },
-            },
-          },
-          settings = {
-            pyright = {
-              -- Using Ruff's import organizer
-              disableOrganizeImports = true,
-              disableTaggedHints = true,
-              openFilesOnly = true,
-            },
-            python = {
-              analysis = {
-                autoSearchPaths = true,
-                diagnosticMode = 'openFilesOnly',
-                -- Ignore all files for analysis to exclusively use Ruff for linting
-                ignore = { 'src' },
-                exclude = { 'src' },
-                typeCheckingMode = 'off', -- Using mypy
-                diagnosticSeverityOverrides = {
-                  reportGeneralTypeIssues = false,
-                  reportImplicitOverride = false,
-                  reportIncompatibleMethodOverride = false,
-                  reportIncompatibleVariableOverride = false,
-                },
-              },
-              pythonPath = '.venv/bin/python',
-            },
-          },
-        },
+        -- pyright = {
+        --   capabilities = {
+        --     textDocument = {
+        --       publishDiagnostics = {
+        --         tagSupport = {
+        --           valueSet = { 2 },
+        --         },
+        --       },
+        --     },
+        --   },
+        --   settings = {
+        --     pyright = {
+        --       -- Using Ruff's import organizer
+        --       disableOrganizeImports = true,
+        --       disableTaggedHints = true,
+        --       openFilesOnly = true,
+        --     },
+        --     python = {
+        --       analysis = {
+        --         autoSearchPaths = true,
+        --         diagnosticMode = 'openFilesOnly',
+        --         -- Ignore all files for analysis to exclusively use Ruff for linting
+        --         ignore = { 'src' },
+        --         exclude = { 'src' },
+        --         typeCheckingMode = 'off', -- Using mypy
+        --         diagnosticSeverityOverrides = {
+        --           reportGeneralTypeIssues = false,
+        --           reportImplicitOverride = false,
+        --           reportIncompatibleMethodOverride = false,
+        --           reportIncompatibleVariableOverride = false,
+        --         },
+        --       },
+        --       pythonPath = '.venv/bin/python',
+        --     },
+        --   },
+        -- },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
@@ -929,13 +893,15 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    'navarasu/onedark.nvim',
+    name = 'onedark',
     priority = 1000, -- Make sure to load this before all the other start plugins.
+    style = 'dark', -- dark, darker, cool, deep, warm, warmer, light
     init = function()
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'onedark'
 
       -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
